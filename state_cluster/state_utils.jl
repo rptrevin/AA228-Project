@@ -6,6 +6,7 @@ using Random
 using PyPlot
 using Clustering
 using LinearAlgebra
+using Base.Threads
 
 dpath = "../dataset_json/"
 apath = "../dataset_artifacts/"
@@ -55,7 +56,7 @@ function k_means_pp(data, k)
     resize!(dist, m)
     
     for i = 1:(k - 1)
-        for s = 1:m
+        @threads for s = 1:m
             p = data[:, s]
             d = Float64(Inf)
 
@@ -68,6 +69,10 @@ function k_means_pp(data, k)
         
         # add next centroid
         push!(centroids, data[1:dim, argmax(dist)])
+        
+        if i % 10 == 1 || i == k - 1
+            println("k_means_pp $(i) of $(k)")
+        end
     end
     
     return centroids 
