@@ -46,7 +46,7 @@ end
 #
 # iteratively compute ulitity for each state for passed policy
 #
-function value_iterator(mdp::MDP, iters = 10000)
+function value_iterator(mdp::MDP, iters = 30000)
     S, R, T, γ, A, S_used = mdp.S, mdp.R, mdp.T, mdp.γ, mdp.A, mdp.S_used
     U = spzeros(Float64, S) # value function
     spin = SpinLock()

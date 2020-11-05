@@ -17,7 +17,6 @@ STATE_SURVIVED     = n_states + 2
 function load_trajectories()
     patients = []
     ds       = mdp_trajectory_dataset()
-
     for i = 1:n_patients
         p = JSON.parsefile(DS_PATH * "mdp_patient_" * string(i) * ".json")
         push!(patients, p) 
@@ -29,7 +28,6 @@ function load_trajectories()
             push!(ds.sp, states[j + 1])
             push!(ds.tid, i)
         end
-
         if i % 1000 == 1 || i == n_patients
             println("loaded patient $(i) of $(n_patients)")
         end
