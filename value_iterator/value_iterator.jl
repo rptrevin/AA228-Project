@@ -39,7 +39,7 @@ function solve()
     # input_data = CSV.read(infile)
 
     patients, dataset = load_trajectories()
-    mdp = MDP(1, n_states + 2, 25)
+    mdp = MDP(0.999999, n_states + 2, 25)
     
     load!(mdp, dataset)
 

@@ -41,12 +41,17 @@ function lookahead(m::MDP, U::SparseVector, s, a)
     end
     r = R(s, a)
     res = r + m.γ * u_sp
+    if isnothing(res) || res > 1.0
+        println("invalid reward:$(res) for ($(s),$(a))")
+        @assert false
+    end
+    return res
 end
 
 #
 # iteratively compute ulitity for each state for passed policy
 #
-function value_iterator(mdp::MDP, iters = 30000)
+function value_iterator(mdp::MDP, iters = 1000)
     S, R, T, γ, A, S_used = mdp.S, mdp.R, mdp.T, mdp.γ, mdp.A, mdp.S_used
     U = spzeros(Float64, S) # value function
     spin = SpinLock()
@@ -60,7 +65,7 @@ function value_iterator(mdp::MDP, iters = 30000)
             Up = copy(U)
         end
 
-        @threads for s in S_used
+        for s in S_used
             a_best, u_best = -1, Float64(-Inf)
             for a = 1:A   
                 u = lookahead(mdp, U, s, a)
@@ -148,20 +153,25 @@ function load!(mdp::MDP, sarsp)
     R   = spzeros(Float64, mdp.S, mdp.A)
     R_C = spzeros(Int64, mdp.S, mdp.A)
 
-    for i = 1:m
-        s_i, a_i, r_i, sp_i = s[i], a[i], r[i], sp[i]
+    open("dataset.csv", "w") do io
+        println(io, "s,a,r,sp")
+        for i = 1:m
+            s_i, a_i, r_i, sp_i = s[i], a[i], r[i], sp[i]
 
-        t_sa           = T(s_i, a_i)
-        t_sa[sp_i]    += 1.0
-        R[s_i, a_i]   += r_i
-        R_C[s_i, a_i] += 1
+            println(io, "$(s_i),$(a_i),$(r_i),$(sp_i)")
 
-        push!(states, s_i)
-        push!(states, sp_i)
+            t_sa           = T(s_i, a_i)
+            t_sa[sp_i]    += 1.0
+            R[s_i, a_i]   += r_i
+            R_C[s_i, a_i] += 1
 
-        r_max = max(r_max, r_i)
-        r_min = min(r_min, r_i)
-    end 
+            push!(states, s_i)
+            push!(states, sp_i)
+
+            r_max = max(r_max, r_i)
+            r_min = min(r_min, r_i)
+        end 
+    end
 
     for s in states
         for a = 1:A
@@ -169,7 +179,7 @@ function load!(mdp::MDP, sarsp)
                 R[s, a] /= R_C[s, a]
             end
             if sum(T(s, a)) != 0
-                t_sa = T(s, a) / sum(T(s, a))
+                t_sa = T(s, a) / (sum(T(s, a)) + EPSILON)
                 td[(s, a)] = t_sa
             end
         end
@@ -179,8 +189,35 @@ function load!(mdp::MDP, sarsp)
     mdp.R = (s, a) -> R[s, a]
     mdp.S_used = [s for s in states]
 
+    write_transition(mdp)
+    write_rewards(mdp)
+
     println("Dataset loaded. Actual number of states $(length(states))")
     println("Max reward $(r_max). Min reward $(r_min)")
+end
+
+function write_transition(mdp)
+    open("AI_phys.transitions", "w") do io
+        for s in mdp.S_used
+            println(io, s)
+            for a = 1:mdp.A
+                t = mdp.T(s, a)
+                println(io, "($(s),$(a))->\n$(t)")
+            end
+        end
+    end
+end
+
+function write_rewards(mdp)
+    open("AI_phys.rewards", "w") do io
+        for s in mdp.S_used
+            println(io, s)
+            for a = 1:mdp.A
+                r = mdp.R(s, a)
+                println(io, "($(s),$(a))->$(r)")
+            end
+        end
+    end
 end
 
 
