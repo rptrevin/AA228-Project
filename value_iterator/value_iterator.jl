@@ -10,7 +10,7 @@ include("mdp.jl")
 const PROFILE_ONLY = false
 const n_patients   = 5366
 const n_states     = 750
-const DS_PATH      = "../dataset_artifacts/"
+const DS_PATH      = "../dataset_artifacts_vae/"
 STATE_DECEASED     = n_states + 1
 STATE_SURVIVED     = n_states + 2
 
