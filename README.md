@@ -6,7 +6,7 @@ In our work we reproduce the works of Komorowksi et al. [1] and explore methods 
 
 ## Project folder structure
 
-`results` - Summary 
+`results` - Summary analysis of policies of used algorithms
 
 `dataset_json` - Input dataset, selected sepsis patient trajectories from MIMIC dataset in json format
 
