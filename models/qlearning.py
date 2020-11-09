@@ -36,7 +36,7 @@ def initiate_q(S,A):
 
 def main():
     total_num_states = 752 #100 #312020 #50000, 100
-    file_df = pd.read_csv('/home/rptrevin/Documents/AA228/Final Project/AA228-Project/state_action_information.csv')
+    file_df = pd.read_csv('/results/state_action_information.csv')
     S = list(range(1,total_num_states+1))
     A = set(file_df['a'].tolist())
     gamma = 0.85
@@ -58,7 +58,7 @@ def main():
     print("Ave Elapsed time: " + str(np.mean(stats_array)))
     policy = {s:max_dict(Q[s]) for s in S}
     default_action = max(action_counts.items(), key=operator.itemgetter(1))[0]
-    with open('/home/rptrevin/Documents/AA228/Final Project/AA228-Project/q_learning.policy', 'w') as f:
+    with open('/results/q_learning.policy', 'w') as f:
         f.write("Policy\n")
         for i in range(1, total_num_states+1):
             f.write(str(policy.get(i,default_action)[1])+"\n")

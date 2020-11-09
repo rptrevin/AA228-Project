@@ -174,7 +174,7 @@ def solve_policy_iteration(M, P ):
 
 def main():
     total_num_states = 752 #100 #312020 #50000, 100
-    file_df = pd.read_csv('/home/rptrevin/Documents/AA228/Final Project/AA228-Project/train_state_action_information.csv')
+    file_df = pd.read_csv('/results/train_state_action_information.csv')
     N = {}
     rho = {}
     S = sorted(set(file_df['s'].tolist() + file_df['sp'].tolist()))
@@ -215,7 +215,7 @@ def main():
         action_counts[a] += 1
 
     default_action = max(action_counts.items(), key=operator.itemgetter(1))[0]
-    with open('/home/rptrevin/Documents/AA228/Final Project/AA228-Project/policy_iteration.policy', 'w') as f:
+    with open('/results/policy_iteration.policy', 'w') as f:
         f.write("policy\n")
         for i in range(1, total_num_states+1):
             f.write("%s\n" % policy.get(i,default_action))

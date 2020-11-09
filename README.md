@@ -16,6 +16,9 @@ In our work we reproduce the works of Komorowksi et al. [1] and explore methods 
 
 `deep_sarsa` - implementation of model free SARSA algorithm with value function approximation
 
+ `qlearning` - Implementation of model free Q-Learning algorithm on discrete state space
+ 
+ `policyiterator` Implementation of policy iterator using policy iteration evaluator and lookahead on discrete state space 
 ## References:
 
 [1] M. Komorowski, L. A. Celi, O. Badawi, A. C. Gordon, and A. A. Faisal,“The artificial intelligence clinician learns optimal treatment strategies forsepsis  in  intensive  care,”  vol.  24,  no.  11,  pp.  1716–1720.   Number:  11Publisher: Nature Publishing Group.
