@@ -1,2 +1,1 @@
-# AA228-Project
-This repository will be for AA228 Project. 
+# AA228 Final Project
